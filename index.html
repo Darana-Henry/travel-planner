@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Luxury Family Travel Planner · HYD → World</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ── ROOT ──────────────────────────────────────────── */
+:root{
+  --cream:#fdf8f0;--warm-white:#fffdf8;--text-dark:#1a1208;--text-mid:#4a3f2f;--text-light:#8a7a60;
+  --border:#e8dcc8;--card-bg:#fff;--tag-bg:#f5ede0;
+  --shadow:0 4px 24px rgba(26,18,8,.08);--shadow-lg:0 12px 48px rgba(26,18,8,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-dark);min-height:100vh}
+
+/* ── TOP NAV ──────────────────────────────────────── */
+.country-nav{background:#12100a;display:flex;align-items:center;padding:0 8px;overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(0,0,0,.5)}
+.country-nav::-webkit-scrollbar{display:none}
+.country-btn{display:flex;align-items:center;gap:5px;padding:12px 13px;border:none;background:none;font-family:'DM Sans',sans-serif;font-size:.71rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.38);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-1px;transition:all .2s;flex-shrink:0}
+.country-btn:hover{color:rgba(255,255,255,.75)}
+.country-btn.active{color:#fff;border-bottom-color:var(--ac,#c9943a)}
+.cflag{font-size:1.05rem}
+
+/* ── PAGES ────────────────────────────────────────── */
+.country-page{display:none}
+.country-page.active{display:block;animation:fadeIn .3s ease}
+
+/* ── HERO ─────────────────────────────────────────── */
+.hero{padding:48px 36px 40px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")}
+.hero-flag{font-size:48px;line-height:1;margin-bottom:10px}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3.4rem);font-weight:300;color:#fff;letter-spacing:.02em;line-height:1.1}
+.hero-title em{font-style:italic;color:#f0c060}
+.hero-subtitle{margin-top:8px;color:rgba(255,255,255,.58);font-size:.85rem;font-weight:300;letter-spacing:.07em;text-transform:uppercase}
+.hero-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+.hero-tag{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.9);padding:4px 11px;border-radius:20px;font-size:.74rem;font-weight:500;letter-spacing:.03em}
+.hero-warning,.hero-notice{margin-top:18px;border-radius:9px;padding:11px 15px;font-size:.82rem;line-height:1.55}
+.hero-warning{background:rgba(201,148,58,.18);border:1px solid rgba(201,148,58,.4);color:#e8b96a}
+.hero-notice{background:rgba(100,220,150,.15);border:1px solid rgba(100,220,150,.35);color:#b0e8c0}
+
+/* ── TABS BAR ─────────────────────────────────────── */
+.tabs-bar{background:var(--warm-white);border-bottom:2px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;position:sticky;top:49px;z-index:100;box-shadow:0 2px 8px rgba(26,18,8,.06)}
+.tabs-bar::-webkit-scrollbar{display:none}
+.tab-btn{padding:13px 18px;border:none;background:none;font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--text-light);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s}
+.tab-btn:hover{color:var(--ta,#333)}
+.tab-btn.active{color:var(--ta,#333);border-bottom-color:var(--ta,#333);font-weight:600}
+
+/* ── PANELS ───────────────────────────────────────── */
+.tab-panel{display:none;padding:30px 30px 56px;max-width:960px;margin:0 auto}
+.tab-panel.active{display:block;animation:fadeIn .3s ease}
+
+/* ── SECTION HEADER ───────────────────────────────── */
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.section-icon{font-size:1.4rem}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:600;color:var(--text-dark)}
+
+/* ── CARDS ────────────────────────────────────────── */
+.card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:22px;margin-bottom:18px;box-shadow:var(--shadow);transition:box-shadow .2s}
+.card:hover{box-shadow:var(--shadow-lg)}
+.day-card{border-radius:0 12px 12px 0}
+.day-label{display:inline-flex;align-items:center;gap:6px;color:#fff;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:16px;margin-bottom:12px}
+.day-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;font-weight:600;color:var(--text-dark);margin-bottom:14px}
+
+/* ── NOTICES ──────────────────────────────────────── */
+.notice{border-radius:10px;padding:12px 15px;font-size:.83rem;line-height:1.6;margin-bottom:16px;display:flex;gap:9px;align-items:flex-start}
+.notice-info{background:#edf4fb;border:1px solid #b8d4ec;color:#2c4a6e}
+.notice-warn{background:#fef9ee;border:1px solid #f0d97a;color:#7a5a10}
+.notice-green{background:#edfaf4;border:1px solid #9fd9be;color:#1a5e3a}
+.notice-red{background:#fdf0f0;border:1px solid #f0aaaa;color:#8b1a1a}
+.notice-icon{font-size:1rem;flex-shrink:0;margin-top:1px}
+
+/* ── ACTIVITY TABLE ───────────────────────────────── */
+.activity-table{width:100%;border-collapse:collapse;font-size:.87rem}
+.activity-table th{text-align:left;font-size:.7rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-light);padding:0 12px 10px 0;border-bottom:1px solid var(--border)}
+.activity-table td{padding:11px 12px 11px 0;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.55;color:var(--text-mid)}
+.activity-table tr:last-child td{border-bottom:none}
+.activity-table td:first-child{font-weight:600;color:#2c4a6e;white-space:nowrap;font-size:.8rem;padding-right:14px}
+.activity-table td.activity-name{font-weight:600;color:var(--text-dark)}
+.cost-badge{display:inline-block;background:var(--tag-bg);border:1px solid var(--border);border-radius:6px;padding:2px 8px;font-size:.76rem;font-weight:600;color:#2a7a6a;white-space:nowrap;margin:1px}
+.cost-total{display:inline-block;color:#fff;border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:700}
+
+/* ── FLIGHT ROUTE ─────────────────────────────────── */
+.flight-route{display:flex;align-items:center;gap:12px;margin:14px 0;flex-wrap:wrap}
+.flight-city{text-align:center}
+.flight-city .code{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;line-height:1}
+.flight-city .name{font-size:.7rem;color:var(--text-light);letter-spacing:.05em;text-transform:uppercase;margin-top:2px}
+.flight-arrow{flex:1;text-align:center;position:relative;min-width:80px}
+.flight-arrow::before{content:'';display:block;height:1px;background:var(--border);position:absolute;top:50%;left:0;right:0}
+.flight-arrow span{background:var(--cream);padding:0 8px;position:relative;font-size:.78rem;color:var(--text-light)}
+.flight-stop{background:var(--tag-bg);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:.78rem;color:var(--text-mid);text-align:center}
+
+/* ── COMPARE TABLE ────────────────────────────────── */
+.compare-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.compare-table th{padding:10px 12px;text-align:center;font-size:.72rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#fff;background:#1a1208}
+.compare-table th:first-child{text-align:left;border-radius:9px 0 0 0}
+.compare-table th:last-child{border-radius:0 9px 0 0}
+.compare-table td{padding:9px 12px;border-bottom:1px solid var(--border);color:var(--text-mid);text-align:center;vertical-align:middle}
+.compare-table td:first-child{text-align:left;font-weight:600;color:var(--text-dark)}
+.compare-table tr:nth-child(even) td{background:var(--tag-bg)}
+.compare-table tr:last-child td{border-bottom:none}
+.compare-table tr.total-row td{color:#fff;font-weight:700;border-bottom:none;background:#1a1208}
+.tick{color:#1a7a3a;font-size:1.05em}.cross{color:#c0392b;font-size:1.05em}
+
+/* ── HOTEL CARDS ──────────────────────────────────── */
+.hotel-card{position:relative}
+.hotel-rank{position:absolute;top:-11px;left:18px;color:#fff;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 10px;border-radius:16px}
+.hotel-name{font-family:'Cormorant Garamond',serif;font-size:1.45rem;font-weight:600;margin:10px 0 4px;color:var(--text-dark)}
+.hotel-stars{letter-spacing:2px;font-size:.92rem}
+.hotel-meta{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0 14px}
+.hotel-meta-item{display:flex;align-items:center;gap:4px;font-size:.78rem;color:var(--text-mid);background:var(--tag-bg);padding:3px 9px;border-radius:5px;border:1px solid var(--border)}
+.hotel-why-title{font-size:.69rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-light);margin-bottom:7px}
+.hotel-bullet{display:flex;align-items:flex-start;gap:7px;margin-bottom:6px;font-size:.85rem;color:var(--text-mid);line-height:1.5}
+.hotel-bullet::before{content:'→';font-size:.83rem;flex-shrink:0;margin-top:1px;color:#888}
+.gen-bullet::before{color:#888}
+.hotel-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:14px}
+.hotel-stat{background:var(--tag-bg);border:1px solid var(--border);border-radius:7px;padding:9px 10px}
+.hotel-stat-label{font-size:.64rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-light);margin-bottom:2px}
+.hotel-stat-value{font-size:.87rem;font-weight:600;color:var(--text-dark)}
+.hotel-quote{margin-top:14px;padding:9px 12px;font-style:italic;color:var(--text-mid);font-size:.83rem;background:var(--tag-bg);border-radius:0 7px 7px 0;border-left:3px solid #888;line-height:1.6}
+.recbadge,.gen-rec{display:inline-flex;align-items:center;gap:5px;background:#2a7a6a;color:#fff;font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:16px;margin-top:10px}
+.gold-rank{background:#c9943a}.silver-rank{background:#8a9db5}.bronze-rank{background:#c07850}
+
+/* ── BUDGET TABLE ─────────────────────────────────── */
+.budget-table{width:100%;border-collapse:collapse;font-size:.85rem}
+.budget-table tr td{padding:10px 13px;border-bottom:1px solid var(--border);color:var(--text-mid);vertical-align:top;line-height:1.5}
+.budget-table tr td:first-child{font-weight:600;color:var(--text-dark);width:58%}
+.budget-table tr td:last-child{text-align:right;font-weight:700}
+.budget-table tr.grand-total td{color:#fff;font-weight:700;font-size:.96rem;border-bottom:none;background:#1a1208}
+.budget-table tr.grand-total td:last-child{color:#f5d080;font-size:1.05rem}
+
+/* ── HOME PAGE ────────────────────────────────────── */
+.home-hero{background:linear-gradient(160deg,#12100a 0%,#1a1a0a 50%,#0a120a 100%);padding:52px 36px 44px;text-align:center}
+.home-logo{font-size:52px;margin-bottom:14px}
+.home-title{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:300;color:#fff;letter-spacing:.03em}
+.home-title em{font-style:italic;color:#e8b96a}
+.home-sub{margin-top:8px;color:rgba(255,255,255,.5);font-size:.84rem;font-weight:300;letter-spacing:.08em;text-transform:uppercase}
+.home-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;padding:28px 28px 44px;max-width:1100px;margin:0 auto}
+.home-card{background:var(--card-bg);border:1px solid var(--border);border-radius:14px;padding:26px 20px;box-shadow:var(--shadow);cursor:pointer;transition:all .25s;text-align:center;position:relative}
+.home-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-3px)}
+.home-card-flag{font-size:46px;margin-bottom:10px}
+.home-card-country{font-family:'Cormorant Garamond',serif;font-size:1.65rem;font-weight:600;margin-bottom:4px}
+.home-card-tier{display:inline-block;font-size:.67rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:2px 8px;border-radius:16px;margin-bottom:12px}
+.home-card-rank{position:absolute;top:10px;right:10px;background:#1a1208;color:#e8b96a;font-size:.64rem;font-weight:700;padding:2px 7px;border-radius:10px;letter-spacing:.05em}
+.kid-score{display:flex;justify-content:center;gap:1px;margin-bottom:5px;font-size:.95rem}
+.home-card-score{font-size:.8rem;color:var(--text-mid);line-height:1.65;margin-bottom:12px}
+.home-card-stats{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.cstat{background:var(--tag-bg);border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:.7rem;color:var(--text-mid)}
+.home-card-btn{display:inline-block;padding:7px 18px;border-radius:7px;font-size:.74rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:#fff;border:none;cursor:pointer;transition:opacity .2s;width:100%;margin-top:6px}
+.home-card-btn:hover{opacity:.85}
+.home-info{padding:0 28px 40px;max-width:1100px;margin:0 auto}
+.home-info-card{background:var(--card-bg);border:1px solid var(--border);border-radius:12px;padding:20px;box-shadow:var(--shadow)}
+.home-info-title{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600;margin-bottom:14px;color:var(--text-dark)}
+.profile-row{display:flex;flex-wrap:wrap;gap:8px}
+.profile-pill{display:flex;align-items:center;gap:5px;background:var(--tag-bg);border:1px solid var(--border);border-radius:7px;padding:6px 12px;font-size:.82rem;color:var(--text-mid)}
+
+/* ── TIER LIST STYLES ─────────────────────────────── */
+.tier-page{padding:28px;max-width:1100px;margin:0 auto}
+.tier-header{margin-bottom:28px}
+.tier-header h2{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--text-dark);margin-bottom:6px}
+.tier-header p{font-size:.85rem;color:var(--text-light)}
+
+/* Price tier list */
+.tier-row{display:flex;align-items:stretch;gap:0;margin-bottom:12px;border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+.tier-label{width:90px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 8px;color:#fff;font-weight:900;font-size:2rem;line-height:1;gap:4px}
+.tier-label-sub{font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:.9;text-align:center}
+.tier-S{background:#e05252}
+.tier-A{background:#e07c32}
+.tier-B{background:#d4b84a}
+.tier-C{background:#5ba05c}
+.tier-F{background:#5a7abf}
+.tier-pills{flex:1;background:#1e1e1e;padding:14px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;min-height:70px}
+.country-pill{display:flex;align-items:center;gap:7px;background:#2a2a2a;border:1px solid #3a3a3a;border-radius:8px;padding:8px 14px;cursor:pointer;transition:all .18s;text-decoration:none;color:#fff}
+.country-pill:hover{background:#383838;border-color:#555;transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.4)}
+.country-pill-flag{font-size:1.2rem}
+.country-pill-name{font-size:.82rem;font-weight:600;letter-spacing:.02em}
+.tier-empty{color:#555;font-size:.8rem;font-style:italic;padding:4px}
+
+/* Continent group */
+.continent-group{margin-bottom:36px}
+.continent-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:600;color:var(--text-dark);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--border);display:flex;align-items:center;gap:8px}
+.continent-emoji{font-size:1.2rem}
+
+/* ── KID SCORE MATRIX ─────────────────────────────── */
+.matrix-wrap{overflow-x:auto;padding-bottom:8px}
+.matrix-table{border-collapse:separate;border-spacing:4px;min-width:600px;width:100%}
+.matrix-table th{font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-light);padding:8px 4px;text-align:center}
+.matrix-table th.row-header{text-align:right;padding-right:12px;min-width:100px}
+.matrix-cell{background:#1e1e1e;border-radius:8px;padding:10px 6px;min-height:70px;min-width:110px;vertical-align:top;position:relative}
+.matrix-cell-empty{background:#f0ebe0;border:1px dashed var(--border);border-radius:8px;min-height:70px;min-width:110px}
+.matrix-row-label{display:flex;flex-direction:column;align-items:flex-end;justify-content:center;min-height:70px;padding-right:8px;gap:3px}
+.matrix-tier-letter{font-weight:900;font-size:1.6rem;color:var(--text-dark);line-height:1}
+.matrix-tier-name{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-light)}
+.matrix-pill{display:flex;align-items:center;gap:5px;background:#2a2a2a;border:1px solid #3a3a3a;border-radius:6px;padding:5px 9px;cursor:pointer;transition:all .18s;margin-bottom:5px;width:100%}
+.matrix-pill:hover{background:#383838;border-color:#555}
+.matrix-pill-flag{font-size:1rem}
+.matrix-pill-name{font-size:.72rem;font-weight:600;color:#fff;line-height:1.2}
+.matrix-col-header{font-size:1rem}
+.stars-header{display:flex;flex-direction:column;align-items:center;gap:2px}
+.stars-header span:last-child{font-size:.6rem;color:var(--text-light);letter-spacing:.05em}
+
+/* ── TIER TABS (sub-tabs inside tier page) ─────────── */
+.tier-tabs{background:#fff;border-bottom:2px solid var(--border);display:flex;overflow-x:auto;scrollbar-width:none;margin-bottom:0}
+.tier-tabs::-webkit-scrollbar{display:none}
+.tier-tab-btn{padding:13px 20px;border:none;background:none;font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--text-light);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all .2s}
+.tier-tab-btn:hover{color:#333}
+.tier-tab-btn.active{color:#1a1208;border-bottom-color:#1a1208;font-weight:700}
+.tier-tab-panel{display:none;padding:28px}
+.tier-tab-panel.active{display:block;animation:fadeIn .3s ease}
+
+/* ── LOADING ──────────────────────────────────────── */
+.loading{text-align:center;padding:80px 20px;font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--text-light)}
+.loading-spin{font-size:2rem;animation:spin 1s linear infinite;display:block;margin-bottom:16px}
+
+/* ── ANIMATIONS ───────────────────────────────────── */
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── RESPONSIVE ───────────────────────────────────── */
+@media(max-width:640px){
+  .hero{padding:32px 18px 28px}
+  .tab-panel{padding:20px 14px 44px}
+  .hotel-grid{grid-template-columns:1fr}
+  .home-cards{grid-template-columns:1fr 1fr;padding:18px 14px 36px;gap:12px}
+  .home-card{padding:16px 12px}
+  .home-card-flag{font-size:34px}
+  .home-card-country{font-size:1.3rem}
+  .home-info{padding:0 14px 32px}
+  .tier-page{padding:18px 14px}
+  .tier-label{width:72px}
+  .tier-tab-panel{padding:18px 14px}
+}
+@media(max-width:380px){.home-cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- NAV (built by JS) -->
+<div class="country-nav" id="cnav">
+  <div class="loading" style="color:rgba(255,255,255,.4);padding:12px 16px;font-size:.75rem;font-family:'DM Sans',sans-serif">Loading...</div>
+</div>
+
+<!-- MAIN CONTENT (built by JS) -->
+<div id="main-content">
+  <div class="loading"><span class="loading-spin">✈️</span>Loading your travel planner...</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  CONFIG — update this URL after you push to GitHub
+// ═══════════════════════════════════════════════════════
+const DATA_URL = 'countries.json';
+
+// ═══════════════════════════════════════════════════════
+//  TIER CONFIG
+// ═══════════════════════════════════════════════════════
+const PRICE_TIERS = [
+  { id:'S', label:'S', sub:'Shockingly Cheap', cls:'tier-S' },
+  { id:'A', label:'A', sub:'Affordable',       cls:'tier-A' },
+  { id:'B', label:'B', sub:'Moderate',          cls:'tier-B' },
+  { id:'C', label:'C', sub:'Expensive',         cls:'tier-C' },
+  { id:'F', label:'F', sub:'Overpriced',        cls:'tier-F' },
+];
+
+const KID_STARS = [1,2,3,4,5];
+
+const CONTINENT_EMOJIS = {
+  'Southeast Asia':'🌏','East Asia':'🏯','South Asia':'🏔',
+  'Middle East':'🏜','Central Asia':'🗺','Caucasus':'⛰️',
+  'Europe':'🏰','Africa':'🌍','Americas':'🌎','Oceania':'🌊'
+};
+
+// ═══════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════
+let countries = [];
+let activeMain = 'home';
+
+// ═══════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════
+function showCountry(id, btn) {
+  document.querySelectorAll('.country-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.country-btn').forEach(b => b.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  if (page) page.classList.add('active');
+  if (btn) btn.classList.add('active');
+  activeMain = id;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showTab(id, btn) {
+  const panel = document.getElementById(id);
+  if (!panel) return;
+  const parent = panel.closest('.country-page, .tier-tab-panel-host');
+  if (parent) {
+    parent.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  }
+  panel.classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+function showTierTab(id, btn) {
+  document.querySelectorAll('.tier-tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tier-tab-btn').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById(id);
+  if (panel) panel.classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+function goToCountry(id) {
+  const btn = document.querySelector(`.country-btn[data-id="${id}"]`);
+  showCountry(id, btn);
+}
+
+// ═══════════════════════════════════════════════════════
+//  BUILD NAV
+// ═══════════════════════════════════════════════════════
+function buildNav(countries) {
+  const nav = document.getElementById('cnav');
+  let html = `<button class="country-btn active" data-id="home" onclick="showCountry('home',this)" style="--ac:#e8b96a">🌏 <span>All Trips</span></button>`;
+  html += `<button class="country-btn" data-id="tiers" onclick="showCountry('tiers',this)" style="--ac:#a0c4ff">📊 <span>Tier Lists</span></button>`;
+  countries.forEach(c => {
+    html += `<button class="country-btn" data-id="${c.id}" onclick="showCountry('${c.id}',this)" style="--ac:${c.accentColor}"><span class="cflag">${c.flag}</span>${c.name.split('·')[0].trim()}</button>`;
+  });
+  nav.innerHTML = html;
+}
+
+// ═══════════════════════════════════════════════════════
+//  BUILD HOME PAGE
+// ═══════════════════════════════════════════════════════
+function buildHome(countries) {
+  const sorted = [...countries].sort((a,b) => a.rank - b.rank);
+  
+  const tierColors = {S:'#e05252',A:'#e07c32',B:'#c9a820',C:'#5ba05c',F:'#5a7abf'};
+  const tierBg = {S:'#fdeaea',A:'#fff0e6',B:'#fffbe6',C:'#edfaf0',F:'#eaf0ff'};
+
+  let cardsHtml = sorted.map(c => {
+    const tc = tierColors[c.priceTier] || '#888';
+    const tb = tierBg[c.priceTier] || '#f5f5f5';
+    return `
+    <div class="home-card" onclick="goToCountry('${c.id}')" style="border-top:4px solid ${c.accentColor}">
+      <div class="home-card-rank">#${c.rank} Best for Kids</div>
+      <div class="home-card-flag">${c.flag}</div>
+      <div class="home-card-country" style="color:${c.accentColor}">${c.name}</div>
+      <span class="home-card-tier" style="background:${tb};color:${tc};border:1px solid ${tc}">${c.priceTier}-Tier · ${PRICE_TIERS.find(t=>t.id===c.priceTier)?.sub||''}</span>
+      <div class="kid-score">${c.kidScoreDisplay}</div>
+      <div class="home-card-score">${c.homeCardSummary}</div>
+      <div class="home-card-stats">
+        <span class="cstat">✈️ ${c.flightTime}</span>
+        <span class="cstat">🛂 ${c.visa}</span>
+        <span class="cstat">💰 ${c.budgetRange}</span>
+      </div>
+      <button class="home-card-btn" style="background:${c.accentColor}">View ${c.name.split('·')[0].trim()} →</button>
+    </div>`;
+  }).join('');
+
+  // Comparison table
+  let tableRows = sorted.map(c => `
+    <tr onclick="goToCountry('${c.id}')" style="cursor:pointer">
+      <td>${c.flag} ${c.name}</td>
+      <td>${c.kidScoreDisplay}</td>
+      <td>${c.directFlight ? '<span class="tick">✓ Direct</span>' : '<span class="cross">✗</span>'}</td>
+      <td>${c.flightTime}</td>
+      <td>${c.visa}</td>
+      <td>${c.budgetRange}</td>
+    </tr>`).join('');
+
+  return `
+<div id="page-home" class="country-page active">
+  <div class="home-hero">
+    <div class="home-logo">✈️</div>
+    <h1 class="home-title">Luxury Family Travel<br/><em>Planner</em></h1>
+    <p class="home-sub">Hyderabad → The World · Family of 3 · 4-Day Trips · ${countries.length} Countries</p>
+  </div>
+
+  <div class="home-info" style="padding-top:24px;padding-bottom:16px">
+    <div class="home-info-card">
+      <div class="home-info-title">👨‍👩‍👧 Your Family Profile</div>
+      <div class="profile-row">
+        <span class="profile-pill">🏠 Departing Hyderabad (HYD)</span>
+        <span class="profile-pill">👨 Husband + 👩 Wife + 👧 6-year-old girl</span>
+        <span class="profile-pill">✝️ Christian family · No Hindu temples</span>
+        <span class="profile-pill">📅 Exactly 4 days per trip</span>
+        <span class="profile-pill">💎 Luxury-focused · Kid-friendly pacing</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding:0 28px 10px;max-width:1100px;margin:0 auto">
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:600;color:var(--text-dark);margin-bottom:3px">All ${countries.length} Destinations — Best to Worst for a 6-Year-Old</h2>
+    <p style="font-size:.82rem;color:var(--text-light)">Click any card to explore the full 4-day itinerary, flights, hotels, and costs.</p>
+  </div>
+
+  <div class="home-cards">${cardsHtml}</div>
+
+  <div class="home-info">
+    <div class="home-info-card">
+      <div class="home-info-title">📊 All ${countries.length} Countries — Quick Comparison</div>
+      <div style="overflow-x:auto">
+        <table class="compare-table" style="font-size:.78rem;min-width:620px">
+          <thead><tr>
+            <th>Country</th><th>Kid Score</th><th>Direct Flight?</th>
+            <th>Flight Time</th><th>Visa for Indians</th><th>Est. Budget (3 pax)</th>
+          </tr></thead>
+          <tbody>${tableRows}</tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  BUILD COUNTRY PAGE
+// ═══════════════════════════════════════════════════════
+function buildCountryPage(c) {
+  const noticeClass = c.isWarning ? 'hero-warning' : 'hero-notice';
+  const panelIds = ['ov','d1','d2','d3','d4','fl','ht','bg'];
+  const panelLabels = ['📋 Overview','📅 Day 1','📅 Day 2','📅 Day 3','📅 Day 4','✈️ Flights','🏨 Hotels','💰 Budget'];
+  const panelContent = [c.overviewHtml, c.d1Html, c.d2Html, c.d3Html, c.d4Html, c.flightsHtml, c.hotelsHtml, c.budgetHtml];
+
+  const tabBtns = panelIds.map((pid, i) =>
+    `<button class="tab-btn${i===0?' active':''}" onclick="showTab('${c.id}-${pid}',this)">${panelLabels[i]}</button>`
+  ).join('');
+
+  const tabPanels = panelIds.map((pid, i) =>
+    `<div id="${c.id}-${pid}" class="tab-panel${i===0?' active':''}">${panelContent[i]||''}</div>`
+  ).join('');
+
+  return `
+<div id="page-${c.id}" class="country-page">
+  <div class="hero" style="background:${c.heroGradient}">
+    <div class="hero-flag">${c.flag}</div>
+    <h1 class="hero-title">A Family Journey to<br/><em style="color:#f0c060">${c.name}</em></h1>
+    <p class="hero-subtitle">4-Day Itinerary · Hyderabad → ${c.name} · Family of 3</p>
+    <div class="hero-tags">${c.heroTagsHtml}</div>
+    <div class="${noticeClass}">${c.heroNoticeHtml}</div>
+  </div>
+  <div class="tabs-bar" style="--ta:${c.accentColor}">${tabBtns}</div>
+  ${tabPanels}
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  BUILD TIER LISTS PAGE
+// ═══════════════════════════════════════════════════════
+function buildPill(c, size='normal') {
+  const cls = size === 'small' ? 'matrix-pill' : 'country-pill';
+  const flagCls = size === 'small' ? 'matrix-pill-flag' : 'country-pill-flag';
+  const nameCls = size === 'small' ? 'matrix-pill-name' : 'country-pill-name';
+  return `<div class="${cls}" onclick="goToCountry('${c.id}')">
+    <span class="${flagCls}">${c.flag}</span>
+    <span class="${nameCls}">${c.name.split('·')[0].trim()}</span>
+  </div>`;
+}
+
+function buildPriceTierList(countries) {
+  return PRICE_TIERS.map(tier => {
+    const tierCountries = countries.filter(c => c.priceTier === tier.id);
+    const pills = tierCountries.length
+      ? tierCountries.map(c => buildPill(c)).join('')
+      : `<span class="tier-empty">No countries yet</span>`;
+    return `
+    <div class="tier-row">
+      <div class="tier-label ${tier.cls}">
+        <span>${tier.label}</span>
+        <span class="tier-label-sub">${tier.sub}</span>
+      </div>
+      <div class="tier-pills">${pills}</div>
+    </div>`;
+  }).join('');
+}
+
+function buildPriceTierByContinent(countries) {
+  const continents = [...new Set(countries.map(c => c.continent))].sort();
+  return continents.map(cont => {
+    const contCountries = countries.filter(c => c.continent === cont);
+    const emoji = CONTINENT_EMOJIS[cont] || '🌐';
+    const rows = PRICE_TIERS.map(tier => {
+      const tc = contCountries.filter(c => c.priceTier === tier.id);
+      if (!tc.length) return '';
+      return `
+      <div class="tier-row">
+        <div class="tier-label ${tier.cls}">
+          <span>${tier.label}</span>
+          <span class="tier-label-sub">${tier.sub}</span>
+        </div>
+        <div class="tier-pills">${tc.map(c => buildPill(c)).join('')}</div>
+      </div>`;
+    }).filter(Boolean).join('');
+    return `
+    <div class="continent-group">
+      <div class="continent-title"><span class="continent-emoji">${emoji}</span>${cont}</div>
+      ${rows}
+    </div>`;
+  }).join('');
+}
+
+function buildKidMatrix(countries) {
+  const tierOrder = ['S','A','B','C','F'];
+  const tierNames = {S:'Shockingly Cheap',A:'Affordable',B:'Moderate',C:'Expensive',F:'Overpriced'};
+
+  // Column headers
+  let headerRow = `<tr><th class="row-header">Price Tier →<br/>Kid Score ↓</th>`;
+  KID_STARS.forEach(s => {
+    const stars = '⭐'.repeat(s);
+    headerRow += `<th><div class="stars-header"><span class="matrix-col-header">${stars}</span><span>${s} Star${s>1?'s':''}</span></div></th>`;
+  });
+  headerRow += '</tr>';
+
+  // Data rows
+  const dataRows = tierOrder.map(tier => {
+    const tierCountries = countries.filter(c => c.priceTier === tier);
+    let row = `<tr>
+      <td class="row-header">
+        <div class="matrix-row-label">
+          <span class="matrix-tier-letter" style="color:${tier==='S'?'#e05252':tier==='A'?'#e07c32':tier==='B'?'#c9a820':tier==='C'?'#5ba05c':'#5a7abf'}">${tier}</span>
+          <span class="matrix-tier-name">${tierNames[tier]}</span>
+        </div>
+      </td>`;
+    KID_STARS.forEach(stars => {
+      const cell = tierCountries.filter(c => c.kidScore === stars);
+      if (cell.length) {
+        row += `<td class="matrix-cell">${cell.map(c => buildPill(c,'small')).join('')}</td>`;
+      } else {
+        row += `<td class="matrix-cell-empty"></td>`;
+      }
+    });
+    row += '</tr>';
+    return row;
+  }).join('');
+
+  return `
+  <div class="notice notice-info" style="margin-bottom:20px">
+    <span class="notice-icon">ℹ️</span>
+    <span><strong>How to read this matrix:</strong> Y-axis (rows) = price tier, S is cheapest, F is most expensive. X-axis (columns) = kid-friendliness, ⭐ is limited, ⭐⭐⭐⭐⭐ is world-class. <strong>Top-right = best family value.</strong> Click any country to see the full itinerary.</span>
+  </div>
+  <div class="matrix-wrap">
+    <table class="matrix-table">
+      ${headerRow}
+      ${dataRows}
+    </table>
+  </div>`;
+}
+
+function buildKidMatrixByContinent(countries) {
+  const continents = [...new Set(countries.map(c => c.continent))].sort();
+  return continents.map(cont => {
+    const contCountries = countries.filter(c => c.continent === cont);
+    const emoji = CONTINENT_EMOJIS[cont] || '🌐';
+    return `
+    <div class="continent-group">
+      <div class="continent-title"><span class="continent-emoji">${emoji}</span>${cont}</div>
+      ${buildKidMatrix(contCountries)}
+    </div>`;
+  }).join('');
+}
+
+function buildTierPage(countries) {
+  return `
+<div id="page-tiers" class="country-page">
+  <div class="tier-tabs">
+    <button class="tier-tab-btn active" onclick="showTierTab('tier-price-global',this)">💰 Price Tiers (Global)</button>
+    <button class="tier-tab-btn" onclick="showTierTab('tier-price-continent',this)">💰 Price Tiers (By Continent)</button>
+    <button class="tier-tab-btn" onclick="showTierTab('tier-kid-global',this)">👧 Kid Score (Global)</button>
+    <button class="tier-tab-btn" onclick="showTierTab('tier-kid-continent',this)">👧 Kid Score (By Continent)</button>
+  </div>
+
+  <div id="tier-price-global" class="tier-tab-panel active">
+    <div class="tier-page">
+      <div class="tier-header">
+        <h2>💰 Price Tiers — All ${countries.length} Countries</h2>
+        <p>Ranked by total 4-day budget for a family of 3 departing from Hyderabad. Click any country to view the full itinerary.</p>
+      </div>
+      ${buildPriceTierList(countries)}
+    </div>
+  </div>
+
+  <div id="tier-price-continent" class="tier-tab-panel">
+    <div class="tier-page">
+      <div class="tier-header">
+        <h2>💰 Price Tiers — By Continent</h2>
+        <p>Same price tiers, grouped by region. New continents appear automatically as you add countries.</p>
+      </div>
+      ${buildPriceTierByContinent(countries)}
+    </div>
+  </div>
+
+  <div id="tier-kid-global" class="tier-tab-panel">
+    <div class="tier-page">
+      <div class="tier-header">
+        <h2>👧 Kid Score Matrix — All ${countries.length} Countries</h2>
+        <p>Y-axis = price tier (S=cheapest → F=overpriced). X-axis = kid-friendliness for a 6-year-old (⭐ = limited → ⭐⭐⭐⭐⭐ = world-class). Sweet spot: top-right.</p>
+      </div>
+      ${buildKidMatrix(countries)}
+    </div>
+  </div>
+
+  <div id="tier-kid-continent" class="tier-tab-panel">
+    <div class="tier-page">
+      <div class="tier-header">
+        <h2>👧 Kid Score Matrix — By Continent</h2>
+        <p>Same 2D matrix, one per continent. New continents appear automatically as you add countries.</p>
+      </div>
+      ${buildKidMatrixByContinent(countries)}
+    </div>
+  </div>
+</div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+//  MAIN — FETCH JSON AND RENDER
+// ═══════════════════════════════════════════════════════
+async function init() {
+  try {
+    const resp = await fetch(DATA_URL + '?v=' + Date.now());
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const data = await resp.json();
+    countries = data.countries;
+
+    // Build all HTML
+    buildNav(countries);
+
+    let allHtml = buildHome(countries);
+    allHtml += buildTierPage(countries);
+    countries.forEach(c => { allHtml += buildCountryPage(c); });
+
+    document.getElementById('main-content').innerHTML = allHtml;
+
+    // Restore any hash navigation
+    const hash = location.hash.replace('#','');
+    if (hash) {
+      const btn = document.querySelector(`.country-btn[data-id="${hash}"]`);
+      showCountry(hash, btn);
+    }
+
+  } catch(err) {
+    document.getElementById('main-content').innerHTML = `
+      <div style="text-align:center;padding:80px 20px;font-family:'DM Sans',sans-serif">
+        <div style="font-size:3rem;margin-bottom:20px">⚠️</div>
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.8rem;margin-bottom:12px">Could not load travel data</h2>
+        <p style="color:#888;margin-bottom:16px">Make sure <code>countries.json</code> is in the same folder as this file.</p>
+        <p style="color:#aaa;font-size:.85rem">Error: ${err.message}</p>
+        <p style="color:#aaa;font-size:.8rem;margin-top:12px">If running locally, start a local server:<br/><code style="background:#f0f0f0;padding:4px 8px;border-radius:4px">python3 -m http.server 8080</code></p>
+      </div>`;
+  }
+}
+
+init();
+</script>
+</body>
+</html>
