@@ -229,7 +229,7 @@ Always use **exactly** one of these strings in the `"region"` field:
 | kz | Kazakhstan | Central Asia | B | 2 | 16 |
 | uz | Uzbekistan | Central Asia | S | 2 | 17 |
 
-### 🇮🇳 India Domestic (india.json) — next rank: 5
+### 🇮🇳 India Domestic (india.json) — next rank: 7
 
 | ID | Destination | Region | Tier | Kids | Rank |
 |----|------------|--------|------|------|------|
@@ -237,6 +237,8 @@ Always use **exactly** one of these strings in the `"region"` field:
 | nagaland | Nagaland | Northeast India | A | 3 | 2 |
 | kashmir | Kashmir | North India | B | 4 | 3 |
 | ladakh | Ladakh | North India | B | 3 | 4 |
+| mussoorie | Mussoorie | North India | A | 4 | 5 |
+| meghalaya | Meghalaya | Northeast India | A | 4 | 6 |
 
 ---
 
