@@ -229,7 +229,7 @@ Always use **exactly** one of these strings in the `"region"` field:
 | kz | Kazakhstan | Central Asia | B | 2 | 16 |
 | uz | Uzbekistan | Central Asia | S | 2 | 17 |
 
-### 🇮🇳 India Domestic (india.json) — next rank: 20
+### 🇮🇳 India Domestic (india.json) — next rank: 21
 
 | ID | Destination | Region | Tier | Kids | Rank |
 |----|------------|--------|------|------|------|
@@ -252,6 +252,7 @@ Always use **exactly** one of these strings in the `"region"` field:
 | dalhousie | Dalhousie | North India | A | 3 | 17 |
 | lansdowne | Lansdowne | North India | S | 3 | 18 |
 | vagamon | Kerala — Vagamon & Malarikkal | South India | S | 3 | 19 |
+| wayanad | Wayanad & Kozhikode | South India | A | 4 | 20 |
 
 ---
 
