@@ -229,7 +229,7 @@ Always use **exactly** one of these strings in the `"region"` field:
 | kz | Kazakhstan | Central Asia | B | 2 | 16 |
 | uz | Uzbekistan | Central Asia | S | 2 | 17 |
 
-### 🇮🇳 India Domestic (india.json) — next rank: 17
+### 🇮🇳 India Domestic (india.json) — next rank: 20
 
 | ID | Destination | Region | Tier | Kids | Rank |
 |----|------------|--------|------|------|------|
@@ -249,6 +249,9 @@ Always use **exactly** one of these strings in the `"region"` field:
 | mahabaleshwar | Mahabaleshwar | West India | A | 4 | 14 |
 | kumaon | Kumaon Hills — Nainital & Mukteshwar | North India | A | 4 | 15 |
 | shimla | Shimla & Kasauli | North India | A | 3 | 16 |
+| dalhousie | Dalhousie | North India | A | 3 | 17 |
+| lansdowne | Lansdowne | North India | S | 3 | 18 |
+| vagamon | Kerala — Vagamon & Malarikkal | South India | S | 3 | 19 |
 
 ---
 
