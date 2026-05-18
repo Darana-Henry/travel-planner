@@ -27,11 +27,11 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text-d
 .cflag{font-size:1.05rem}
 .star-group{position:relative;display:inline-flex;flex-shrink:0}
 .star-group-btn{display:flex;align-items:center;gap:6px;padding:10px 14px;border:none;background:none;font-family:'DM Sans',sans-serif;font-size:.8rem;color:rgba(255,255,255,.45);cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;margin-bottom:-1px;transition:all .2s}
-.star-group:hover .star-group-btn{color:rgba(255,255,255,.9)}
+.star-group.open .star-group-btn{color:rgba(255,255,255,.9)}
 .star-group-btn.active{color:#fff;border-bottom-color:#c9943a}
 .star-group-count{background:rgba(255,255,255,.15);border-radius:10px;font-size:.62rem;font-weight:700;padding:1px 6px;line-height:1.5}
 .star-dropdown{position:absolute;top:100%;left:0;background:#1c1710;border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:6px;min-width:190px;z-index:500;box-shadow:0 8px 32px rgba(0,0,0,.65);opacity:0;pointer-events:none;transform:translateY(-4px);transition:opacity .15s,transform .15s}
-.star-group:hover .star-dropdown{opacity:1;pointer-events:auto;transform:translateY(0)}
+.star-group.open .star-dropdown{opacity:1;pointer-events:auto;transform:translateY(0)}
 .star-dropdown .country-btn{width:100%;border-radius:7px;padding:8px 12px;border-bottom:none!important;margin-bottom:0;text-align:left;justify-content:flex-start}
 .star-dropdown .country-btn:hover{background:rgba(255,255,255,.08)}
 .star-dropdown .country-btn.active{background:rgba(255,255,255,.1)}
@@ -336,6 +336,20 @@ function goToCountry(id) {
   showCountry(id, btn);
 }
 
+function toggleStarGroup(btn) {
+  const group = btn.closest('.star-group');
+  const isOpen = group.classList.contains('open');
+  const row = group.closest('.nav-row-2, .nav-row-3');
+  row.querySelectorAll('.star-group').forEach(g => g.classList.remove('open'));
+  if (!isOpen) group.classList.add('open');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.star-group')) {
+    document.querySelectorAll('.star-group.open').forEach(g => g.classList.remove('open'));
+  }
+});
+
 // ═══════════════════════════════════════════════════════
 //  BUILD NAV
 // ═══════════════════════════════════════════════════════
@@ -344,14 +358,15 @@ function buildNav(countries, india) {
 
   function buildStarGroups(destinations) {
     return [5,4,3,2,1].map(score => {
-      const group = destinations.filter(d => d.kidScore === score);
+      const group = destinations.filter(d => d.kidScore === score)
+        .sort((a, b) => a.name.localeCompare(b.name));
       if (!group.length) return '';
       const stars = '⭐'.repeat(score);
       const items = group.map(d => {
         const label = d.name.split('·')[0].split('—')[0].trim();
         return `<button class="country-btn" data-id="${d.id}" onclick="showCountry('${d.id}',this)" style="--ac:${d.accentColor}"><span class="cflag">${d.flag}</span>${label}</button>`;
       }).join('');
-      return `<div class="star-group"><button class="star-group-btn">${stars} <span class="star-group-count">${group.length}</span></button><div class="star-dropdown">${items}</div></div>`;
+      return `<div class="star-group"><button class="star-group-btn" onclick="toggleStarGroup(this)">${stars} <span class="star-group-count">${group.length}</span></button><div class="star-dropdown">${items}</div></div>`;
     }).join('');
   }
 
